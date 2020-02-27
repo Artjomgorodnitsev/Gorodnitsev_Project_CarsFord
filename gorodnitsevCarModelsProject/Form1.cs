@@ -15,6 +15,7 @@ namespace gorodnitsevCarModelsProject
     {
         SqlConnection sqlCon = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane\projects\gorodnitsevCarModelsProject\gorodnitsevCarModelsProject\CarModelDb.mdf;Integrated Security=True;Connect Timeout=30");
         int CarID = 0;
+        string fileDirectory;
         public Form1()
         {
             InitializeComponent();
@@ -45,6 +46,7 @@ namespace gorodnitsevCarModelsProject
                     sqlCmd.Parameters.AddWithValue("@BodyType", bodyText.SelectedItem);
                     sqlCmd.Parameters.AddWithValue("@FuelType", fuelText.SelectedItem);
                     sqlCmd.Parameters.AddWithValue("@Price", priceText.Text.Trim());
+                    sqlCmd.Parameters.AddWithValue("@ImageUrl", fileDirectory);
                     sqlCmd.ExecuteNonQuery();
                     FillDataGridView();
                     MessageBox.Show("Автомобиль выставлен на продажу");
@@ -62,6 +64,7 @@ namespace gorodnitsevCarModelsProject
                     sqlCmd.Parameters.AddWithValue("@BodyType", bodyText.SelectedItem);
                     sqlCmd.Parameters.AddWithValue("@FuelType", fuelText.SelectedItem);
                     sqlCmd.Parameters.AddWithValue("@Price", priceText.Text.Trim());
+                    sqlCmd.Parameters.AddWithValue("@ImageUrl", fileDirectory);
                     sqlCmd.ExecuteNonQuery();
                     FillDataGridView();
                     MessageBox.Show("Данные автомабился обновлены");
@@ -118,13 +121,13 @@ namespace gorodnitsevCarModelsProject
             // TODO: This line of code loads data into the 'carModelDbDataSet.tbl_Cars' table. You can move, or remove it, as needed.
             //this.tbl_CarsTableAdapter.Fill(this.carModelDbDataSet.tbl_Cars);
             FillDataGridView();
-            dataGridView1.Columns["Mark"].HeaderText = "Имя";
+            /*dataGridView1.Columns["Mark"].HeaderText = "Имя";
             dataGridView1.Columns["Model"].HeaderText = "Модель";
             dataGridView1.Columns["Avaria"].HeaderText = "Авария";
             dataGridView1.Columns["Years"].HeaderText = "Год";
             dataGridView1.Columns["BodyType"].HeaderText = "Тип кузова";
             dataGridView1.Columns["FuelType"].HeaderText = "Тип топлива";
-            dataGridView1.Columns["Price"].HeaderText = "Цена";
+            dataGridView1.Columns["Price"].HeaderText = "Цена";*/
         }
 
         private void DataGridView1_DoubleClick(object sender, EventArgs e)
@@ -154,6 +157,9 @@ namespace gorodnitsevCarModelsProject
                 }
                 saveButton.Text = "Обновить";
                 deleteButton.Enabled = true;
+                
+                pictureBox1.Image = Image.FromFile(dataGridView1.CurrentRow.Cells[8].Value.ToString());
+
             }
         }
 
@@ -192,6 +198,17 @@ namespace gorodnitsevCarModelsProject
         private void ResetButton_Click(object sender, EventArgs e)
         {
             Reset();
+        }
+
+        private void BrowseBtn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog opf= new OpenFileDialog();
+            opf.Filter = "Image Files (*.jpg;*.jpeg;.*.gif;)|*.jpg;*.jpeg;.*.gif";
+            if (opf.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox1.Image = new Bitmap(opf.FileName);
+                fileDirectory = opf.FileName;
+            }
         }
     }
 }
